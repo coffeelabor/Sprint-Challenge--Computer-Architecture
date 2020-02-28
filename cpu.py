@@ -11,6 +11,8 @@ JMP = 0b01010100
 JEQ = 0b01010101
 JNE = 0b01010110
 
+AND = 0b10101000
+
 
 class CPU:
     """Main CPU class."""
@@ -57,21 +59,23 @@ class CPU:
         #elif op == "SUB": etc
         elif op == 'CMP':
             set_cmp = self.reg[reg_a]-self.reg[reg_b]
-            # If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
-            if set_cmp > 0:
-                self.fl[0] = 0 #  Less than flag
-                self.fl[1] = 1 #  Greater than flag
+            # If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
+            if set_cmp < 0:
+                self.fl[0] = 1 #  Less than flag
+                self.fl[1] = 0 #  Greater than flag
                 self.fl[2] = 0 #  Equal to flag
+            # If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+            elif set_cmp > 0:
+                self.fl[0] = 0  # Less than flag
+                self.fl[1] = 1  # Greater than flag
+                self.fl[2] = 0  # Equal to flag
             # If they are equal, set the Equal E flag to 1, otherwise set it to 0
-            elif set_cmp == 0:
+            else:
                 self.fl[0] = 0  # Less than flag
                 self.fl[1] = 0  # Greater than flag
                 self.fl[2] = 1  # Equal to flag
-            # If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
-            else:
-                self.fl[0] = 1  # Less than flag
-                self.fl[1] = 0  # Greater than flag
-                self.fl[2] = 0  # Equal to flag
+            
+        # elif op == 'AND':
 
         else:
             raise Exception("Unsupported ALU operation")
@@ -142,3 +146,4 @@ class CPU:
                     self.pc = self.reg[operand_a]
                 else:
                     self.pc += 2
+            # elif ir == AND:
